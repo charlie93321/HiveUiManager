@@ -6,9 +6,14 @@ import com.hbgj.http.util.HttpUtil;
 import com.hbgj.http.util.ListProcessData;
 import com.hbgj.http.util.TableProcessData;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -23,6 +28,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.apache.log4j.Logger;
 import java.io.InputStreamReader;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
 /**
@@ -89,7 +95,16 @@ public class App extends Application
         Scene scene=new Scene(root,900,550);
         primaryStage.setScene(scene);
 
-        root.getChildren().filtered(node -> {
+
+
+        root.getChildren().sorted(new Comparator<Node>() {
+            @Override
+            public int compare(Node o1, Node o2) {
+                double c=o1.getLayoutY()-o2.getLayoutY();
+                if(c<0) return -1 ;
+                else return  1;
+            }
+        }).filtered(node -> {
 
              String id=node.getId();
              if(REMOTE_DBS.equals(id)){
@@ -174,6 +189,7 @@ public class App extends Application
                  column.setCellFactory(cell);
 
 
+
                  column.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent>() {
                      @Override
                      public void handle(TableColumn.CellEditEvent event) {
@@ -183,11 +199,14 @@ public class App extends Application
                           //如何判断一个字段是不是分区字段
 
                           String fname=value.getFname();
+                          String ftype=value.getFtype();
                          String data="dbName="+current_db+"&sql=ALTER TABLE "+current_table;
                           if(null!=current_partition && current_partition.equals(fname)){
                               //修改注释
-                              data+="  SET TBLPROPERTIES('comment' = '"+event.getNewValue()+"')";
-                             // return ;
+                              return;
+                          }else if("#type".equals(ftype)){
+                              //修改表注释
+                              data+=" SET TBLPROPERTIES('comment' = '"+event.getNewValue()+"')";
                           }else{
                               //修改注释
                               data+=" CHANGE COLUMN ";
@@ -195,7 +214,7 @@ public class App extends Application
                               data+=value.getFname()+" "+fname+" "+value.getFtype()
                                       +" "+"COMMENT '"+event.getNewValue()+"'";
                           }
-                          value.setFdesc(event.getNewValue().toString());
+                         value.setFdesc(event.getNewValue().toString());
 
                          HttpUtil.changeComment(HttpUtil.EXECUTE_UPDATE(),data);
 

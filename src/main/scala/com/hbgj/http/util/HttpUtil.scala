@@ -1,7 +1,9 @@
 package com.hbgj.http.util
 
 import java.util
+import java.util.regex.Pattern
 
+import com.hbgj.App
 import com.hbgj.entity.Table
 import org.slf4j.LoggerFactory
 import scalaj.http.{Http, HttpOptions, HttpResponse}
@@ -103,6 +105,7 @@ object HttpUtil {
 
 trait ProcessData[T] {
   def parseObject(source: Any):T
+
 }
 
 class ListProcessData extends ProcessData[java.util.List[String]]{
@@ -127,6 +130,61 @@ object ListProcessData{
 
 class TableProcessData extends  ProcessData[java.util.List[Table]]{
   var partionName:String=null
+  def decodeUnicode(dataStr: String): String = {
+    var start = 0
+    var end = 0
+    val buffer = new StringBuffer
+    while ( {
+      start > -1
+    }) {
+      end = dataStr.indexOf("\\u", start + 2)
+      var charStr = ""
+      if (end == -1) charStr = dataStr.substring(start + 2, dataStr.length)
+      else charStr = dataStr.substring(start + 2, end)
+      val letter = Integer.parseInt(charStr, 16).toChar // 16进制parse整形字符串。
+      buffer.append(new Character(letter).toString)
+      start = end
+    }
+    buffer.toString
+  }
+
+  def parseUnicodeStr(string:String): String ={
+    var str=string
+    val reg="(\\\\[u][0-9A-Za-z]{4})*"
+    val pattern=Pattern.compile(reg)
+    val matcher=pattern.matcher(str)
+    var index=0
+    while(matcher.find()) {
+      val s = matcher.group()
+      if (!s.isEmpty) {
+        println(index,decodeUnicode(s))
+        str=str.replace(s,decodeUnicode(s))
+        index = index + 1
+      }
+    }
+
+    str
+  }
+
+  def getTableDesc(dbName:String,tableName:String):String={
+    var tableDesc=""
+    val list=HttpUtil.getResult(HttpUtil.EXECUTE_QUERY,
+      s"dbName=${dbName}&sql= desc formatted  ${tableName}"  ,
+      new ListMapProceessData)
+
+    val range=0 to list.size()-1
+
+    for(i<-range){
+      val map=list.get(i);
+      if(null!=map && map.size()==1){
+        val comment=map.get("result")
+        if(comment!=null && comment.trim.startsWith("comment")){
+          tableDesc=parseUnicodeStr(comment.replace("comment","").trim)
+        }
+      }
+    }
+    tableDesc
+  }
   override def parseObject(source: Any): java.util.List[Table] = {
     if(null==source)
       return   null
@@ -140,13 +198,26 @@ class TableProcessData extends  ProcessData[java.util.List[Table]]{
             val fdesc=map.get("comment")
             if(fname.startsWith("#")) loop.break()
             if(partionName!=null && partionName.equals(fname)){
-
+              val desc=fdesc.get;
+              if(null==desc || desc.isEmpty)
+                   list.add(new Table(fname,ftype.get,"分区字段-注释不可修改"))
+              else
+                list.add(new Table(fname,ftype.get,"分区字段-注释不可修改. "+fdesc.get))
             }else
                list.add(new Table(fname,ftype.get,fdesc.get))
+
+
         })
     )
+
+    val tableDesc=getTableDesc(App.current_db,App.current_table);
+    //增加表的注释
+    list.add(new Table("表注释","#type",tableDesc))
     list
   }
+
+
+
 }
 
 

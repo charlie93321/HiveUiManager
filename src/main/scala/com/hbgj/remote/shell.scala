@@ -5,6 +5,7 @@ package com.hbgj.remote
 import java.net.URLEncoder
 import java.util
 import java.util.function.Consumer
+import java.util.regex.Pattern
 
 import com.hbgj.code.CodeUtil
 import com.hbgj.http.util.{HttpUtil, ListMapProceessData, ListProcessData, TableProcessData}
@@ -69,7 +70,7 @@ object t1{
 dbName=default&sql= desc  sp_class.areaby_latlnt
     HttpResponse.apply().*/
 
-    val list=HttpUtil.getResult(HttpUtil.EXECUTE_QUERY,
+   /* val list=HttpUtil.getResult(HttpUtil.EXECUTE_QUERY,
       "dbName=default&sql= desc formatted  sp_class.tag_user_model_gt_action"  ,
       new ListMapProceessData)
 
@@ -81,31 +82,17 @@ dbName=default&sql= desc  sp_class.areaby_latlnt
           val comment=map.get("result")
 
           if(comment.trim.startsWith("comment")){
-            // println(decodeUnicode(comment))
+               val reg=
           }
        }
-    }
-    println(list,list.getClass)
+    }*/
+
+
+   //println(decodeUnicode(str))
 
 
 
   }
 
-  /*def decodeUnicode(dataStr: String): String = {
-    var start = 0
-    var end = 0
-    val buffer = new StringBuffer
-    while ( {
-      start > -1
-    }) {
-      end = dataStr.indexOf("\\u", start + 2)
-      var charStr = ""
-      if (end == -1) charStr = dataStr.substring(start + 2, dataStr.length)
-      else charStr = dataStr.substring(start + 2, end)
-      val letter = Integer.parseInt(charStr, 16).toChar // 16进制parse整形字符串。
-      buffer.append(new Character(letter).toString)
-      start = end
-    }
-    buffer.toString
-  }*/
+
 }
