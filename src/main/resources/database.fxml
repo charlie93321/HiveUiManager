@@ -1,28 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.web.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="557.0" prefWidth="910.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hbgj.AppController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="549.0" prefWidth="900.0" style="-fx-background-color: gray;" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hbgj.AppController">
    <children>
-      <ComboBox fx:id="remotedb" layoutX="219.0" layoutY="22.0" onAction="#changeDb" prefHeight="36.0" prefWidth="206.0" promptText="default" />
-      <Label layoutX="33.0" layoutY="45.0" style="-fx-background-color: black; -fx-text-fill: red;" text="hive数据库" />
-      <Label layoutX="22.0" layoutY="79.0" prefHeight="24.0" prefWidth="61.0" text="hive表" />
-      <ComboBox fx:id="remotetabs" layoutX="216.0" layoutY="70.0" onAction="#changeTabs" prefHeight="36.0" prefWidth="212.0" />
-      <TableView fx:id="reomtefield" layoutX="17.0" layoutY="187.0" prefHeight="304.0" prefWidth="864.0" styleClass="t3">
+      <ComboBox fx:id="remotedb" layoutX="158.0" layoutY="19.0" onAction="#changeDb" prefHeight="36.0" prefWidth="280.0" promptText="default" style="-fx-cursor: hand;">
+         <contextMenu>
+            <ContextMenu>
+              <items>
+                <MenuItem mnemonicParsing="false" text="Unspecified Action" />
+              </items>
+            </ContextMenu>
+         </contextMenu></ComboBox>
+      <Label layoutX="29.0" layoutY="22.0" prefHeight="36.0" prefWidth="104.0" style="-fx-background-color: #FF6347; -fx-text-fill: white; -fx-background-radius: 5; -fx-alignment: center; -fx-font-weight: bold;" text="hive数据库" />
+      <Label layoutX="469.0" layoutY="22.0" prefHeight="36.0" prefWidth="104.0" style="-fx-alignment: center; -fx-background-color: #FF6347; -fx-background-radius: 5; -fx-font-weight: bold; -fx-text-fill: white;" text="hive表" />
+      <ComboBox fx:id="remotetabs" layoutX="601.0" layoutY="22.0" onAction="#changeTabs" prefHeight="36.0" prefWidth="280.0" style="-fx-cursor: hand;" />
+      <TableView fx:id="reomtefield" layoutX="17.0" layoutY="133.0" prefHeight="358.0" prefWidth="873.0" styleClass="t3">
         <columns>
-          <TableColumn prefWidth="229.0" styleClass="table-clumn" text="name" />
-          <TableColumn prefWidth="243.0" styleClass="table-clumn" text="type" />
-            <TableColumn prefWidth="390.0" styleClass="table-clumn" text="desc" />
+          <TableColumn prefWidth="251.0" styleClass="table-clumn" text="name" />
+          <TableColumn prefWidth="283.0" styleClass="table-clumn" text="type" />
+            <TableColumn prefWidth="337.0" styleClass="table-clumn" text="desc" />
         </columns>
       </TableView>
-      <Label layoutX="22.0" layoutY="133.0" prefHeight="24.0" prefWidth="61.0" text="分区" />
-      <ComboBox fx:id="remoteregion" layoutX="216.0" layoutY="129.0" prefHeight="36.0" prefWidth="212.0" />
+      <Label layoutX="29.0" layoutY="80.0" prefHeight="36.0" prefWidth="104.0" style="-fx-alignment: center; -fx-background-color: #FF6347; -fx-background-radius: 5; -fx-font-weight: bold; -fx-text-fill: white;" text="分区" />
+      <ComboBox fx:id="remoteregion" layoutX="153.0" layoutY="80.0" prefHeight="36.0" prefWidth="280.0" style="-fx-cursor: hand;" />
       <Separator layoutX="13.0" layoutY="491.0" prefHeight="11.0" prefWidth="873.0" />
-      <Button layoutX="120.0" layoutY="502.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="165.0" text="导入数据" />
-      <RadioButton layoutX="345.0" layoutY="508.0" mnemonicParsing="false" text="是否覆盖原有数据" />
-      <RadioButton layoutX="748.0" layoutY="508.0" mnemonicParsing="false" text="修改注释" />
-      <RadioButton layoutX="573.0" layoutY="508.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="112.0" text="迁移数据" />
+      <Button layoutX="17.0" layoutY="502.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="165.0" style="-fx-background-color: #6495ED; -fx-alignment: center; -fx-font-weight: bold; -fx-text-fill: white; -fx-cursor: hand;" text="导入数据" />
+      <RadioButton layoutX="218.0" layoutY="508.0" mnemonicParsing="false" text="是否覆盖原有数据" />
+      <TextField layoutX="469.0" layoutY="80.0" prefHeight="36.0" prefWidth="280.0" />
+      <Button layoutX="778.0" layoutY="80.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="104.0" style="-fx-background-color: #6495ED; -fx-alignment: center; -fx-font-weight: bold; -fx-text-fill: white; -fx-cursor: hand;" text="搜索" />
+      <ProgressBar layoutX="405.0" layoutY="508.0" prefHeight="27.0" prefWidth="373.0" progress="0.0" />
+      <ToggleButton layoutX="792.0" layoutY="503.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="104.0" style="-fx-background-color: #6495ED; -fx-alignment: center; -fx-font-weight: bold; -fx-text-fill: white;" text="切换" />
    </children>
 </Pane>

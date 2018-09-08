@@ -6,27 +6,24 @@ import com.hbgj.http.util.HttpUtil;
 import com.hbgj.http.util.ListProcessData;
 import com.hbgj.http.util.TableProcessData;
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
-import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.Pane;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.apache.log4j.Logger;
+
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Comparator;
 import java.util.List;
@@ -46,6 +43,7 @@ public class App extends Application
     public static final String REMOTE_TABS="remotetabs";
     public static final String REMOTE_REGIONS="remoteregion";
     public static final String REMOTE_FIELDS="reomtefield";
+    public static final String WEB_VIEW="webview";
 
     public static  String current_db="default";
     public static  String  current_table="";
@@ -140,9 +138,26 @@ public class App extends Application
                  initTableView(REMOTE_FIELDS,node);
 
 
-             }else if("localdb".equals(id)){
-                 //initCombox("local-dbs",node);
-             }
+             }else if("refreshid".equals(id)){
+                 ProgressIndicator  progressIndicator= (ProgressIndicator) node;
+
+
+
+
+
+
+             }/*elseif(WEB_VIEW.equals(id)){
+                 WebView browser = (WebView) node;
+
+                 WebEngine webEngine = browser.getEngine();
+                 File html = new File("htmls/test.html");
+                 try {
+                     webEngine.load("file:///"+html.getCanonicalPath());
+                     System.out.println("file:///"+html.getCanonicalPath());
+                 } catch (IOException e) {
+                     e.printStackTrace();
+                 }
+             }*/
              return false;
 
         });
