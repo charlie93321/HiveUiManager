@@ -31,11 +31,14 @@
       <Label layoutX="29.0" layoutY="80.0" prefHeight="36.0" prefWidth="104.0" style="-fx-alignment: center; -fx-background-color: #FF6347; -fx-background-radius: 5; -fx-font-weight: bold; -fx-text-fill: white;" text="分区" />
       <ComboBox fx:id="remoteregion" layoutX="153.0" layoutY="80.0" prefHeight="36.0" prefWidth="280.0" style="-fx-cursor: hand;" />
       <Separator layoutX="13.0" layoutY="491.0" prefHeight="11.0" prefWidth="873.0" />
-      <Button layoutX="17.0" layoutY="502.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="165.0" style="-fx-background-color: #6495ED; -fx-alignment: center; -fx-font-weight: bold; -fx-text-fill: white; -fx-cursor: hand;" text="导入数据" />
-      <RadioButton layoutX="218.0" layoutY="508.0" mnemonicParsing="false" text="是否覆盖原有数据" />
-      <TextField layoutX="469.0" layoutY="80.0" prefHeight="36.0" prefWidth="280.0" />
-      <Button layoutX="778.0" layoutY="80.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="104.0" style="-fx-background-color: #6495ED; -fx-alignment: center; -fx-font-weight: bold; -fx-text-fill: white; -fx-cursor: hand;" text="搜索" />
-      <ProgressBar layoutX="405.0" layoutY="508.0" prefHeight="27.0" prefWidth="373.0" progress="0.0" />
-      <ToggleButton layoutX="792.0" layoutY="503.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="104.0" style="-fx-background-color: #6495ED; -fx-alignment: center; -fx-font-weight: bold; -fx-text-fill: white;" text="切换" />
+      <Button fx:id="btn_import" onAction="#click" onMouseExited="#mouseExit"
+              onMouseEntered="#mouseEnter" layoutX="17.0" layoutY="502.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="165.0" style="-fx-background-color: #6495ED; -fx-alignment: center; -fx-font-weight: bold; -fx-text-fill: white; -fx-cursor: hand;" text="导入数据" />
+      <RadioButton layoutX="195.0" layoutY="509.0" mnemonicParsing="false" text="是否覆盖原有数据" />
+      <TextField fx:id="input_search" layoutX="469.0" layoutY="80.0" prefHeight="36.0" prefWidth="280.0" />
+      <Button fx:id="btn_search" onAction="#click" onMouseExited="#mouseExit"
+              onMouseEntered="#mouseEnter" layoutX="778.0" layoutY="80.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="104.0" style="-fx-background-color: #6495ED; -fx-alignment: center; -fx-font-weight: bold; -fx-text-fill: white; -fx-cursor: hand;" text="搜索" />
+      <ProgressBar fx:id="processBar" layoutX="405.0" layoutY="508.0" prefHeight="27.0" prefWidth="373.0" progress="0.0" />
+      <ToggleButton fx:id="btn_change" onAction="#click" onMouseExited="#mouseExit"
+                    onMouseEntered="#mouseEnter" layoutX="792.0" layoutY="503.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="104.0" style="-fx-background-color: #6495ED; -fx-alignment: center; -fx-font-weight: bold; -fx-text-fill: white;" text="切换" />
    </children>
 </Pane>

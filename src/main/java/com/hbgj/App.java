@@ -4,6 +4,7 @@ import com.hbgj.code.CodeUtil;
 import com.hbgj.entity.Table;
 import com.hbgj.http.util.HttpUtil;
 import com.hbgj.http.util.ListProcessData;
+import com.hbgj.http.util.TablePartionFiedAndDesc;
 import com.hbgj.http.util.TableProcessData;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -15,12 +16,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.apache.log4j.Logger;
+import scala.Tuple2;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,7 +50,12 @@ public class App extends Application
 
     public static  String current_db="default";
     public static  String  current_table="";
+    public static String current_table_desc="";
 
+    public static Stage mainWindow=null;
+
+    public static String REMOTE="";
+    public static final String LOCAL="LOCAL_";
 
 
    public static final java.util.Map<String,Object> CONTEXT=
@@ -68,7 +76,6 @@ public class App extends Application
           local_username=CodeUtil.decode(p.getProperty("local.username"));
           local_password=CodeUtil.decode(p.getProperty("local.password"));
       } catch (Exception e) {
-          //e.printStackTrace();
           LOGGER.info("数据加载出错",e);
       }
 
@@ -88,12 +95,19 @@ public class App extends Application
     @Override
     public void start(Stage primaryStage) throws Exception{
 
+        mainWindow=primaryStage;
+
+
+
         Pane root = FXMLLoader.load(getClass().getResource("../../database.fxml"));
         primaryStage.setTitle("database-manager");
         Scene scene=new Scene(root,900,550);
         primaryStage.setScene(scene);
 
-
+        primaryStage.getIcons().add(new Image(
+               getClass().getResourceAsStream("../../bee.png")
+                                             )
+                                    );
 
         root.getChildren().sorted(new Comparator<Node>() {
             @Override
@@ -107,37 +121,62 @@ public class App extends Application
              String id=node.getId();
              if(REMOTE_DBS.equals(id)){
                  //加载数据
-                 List<String> obj=HttpUtil.getResult(HttpUtil.SHOW_DATABASES(), "",
-                         ListProcessData.getInstance()
-                 );
+                 List<String> obj= null;
+                 try {
+                     obj = HttpUtil.getResult(
+                             REMOTE+HttpUtil.SHOW_DATABASES(), "",
+                             ListProcessData.getInstance()
+                     );
+                 } catch (Exception e) {
+                     e.printStackTrace();
+                 }
                  CONTEXT.put(REMOTE_DBS,obj);
                  current_db=initCombox(REMOTE_DBS,node);
              }else if(REMOTE_TABS.equals(id)){
-                 List<String> obj=HttpUtil.getResult(HttpUtil.SHOW_TABLES(),
-                         "dbName="+current_db,
-                         ListProcessData.getInstance());
+                 List<String> obj= null;
+                 try {
+                     obj = HttpUtil.getResult(
+                             REMOTE+HttpUtil.SHOW_TABLES(),
+                             "dbName="+current_db,
+                             ListProcessData.getInstance());
+                 } catch (Exception e) {
+                     e.printStackTrace();
+                 }
                  CONTEXT.put(REMOTE_TABS,obj);
                  //加载数据
                  current_table=initCombox(REMOTE_TABS,node);
              }else if(REMOTE_REGIONS.equals(id)){
 
-                 List<String> obj=HttpUtil.getResult(HttpUtil.SHOW_PARTITIONS(),
-                         "dbName="+current_db+"&tableName="+current_table,
-                         ListProcessData.getInstance());
-                 CONTEXT.put(REMOTE_REGIONS,obj);
-                 if(null!=obj && !obj.isEmpty()){
-                     current_partition=obj.get(0).split("=")[0];
-                 }else{
-                     current_partition=null;
+                 /**
+                  * 查询分区数目
+                  * 1.抛出异常   可能其他原因导致接口报错
+                  * 2.null       表示这个表可能为非分区表
+                  * 2.空集合      代表这是一个分区表但是没有数据
+                  * 3.非空集合     代表这个表是一个分区表且有数据
+                  */
+                 List<String> obj= null;
+                 try {
+                     obj = HttpUtil.getResult(
+                             REMOTE+HttpUtil.SHOW_PARTITIONS(),
+                             "dbName="+current_db+"&tableName="+current_table,
+                             ListProcessData.getInstance());
+                     Tuple2<String, String> pk_tdesc=TablePartionFiedAndDesc.getPartionFieldAndDesc();
+                     current_table_desc=pk_tdesc._2;
+                     if(obj==null){
+                         LOGGER.info("`"+current_db+"`.`"+current_table+"` 是一个非分区表");
+                         current_partition=null;
+                     }else if(obj.isEmpty()){
+                         LOGGER.info("`"+current_db+"`.`"+current_table+"` 是一个分区表,但表中没有数据");
+                         current_partition=pk_tdesc._1;
+                     }
+                 } catch (Exception e) {
+                    e.printStackTrace();
                  }
+                 CONTEXT.put(REMOTE_REGIONS,obj);
                  //加载数据
                  initCombox(REMOTE_REGIONS,node);
              }else if(REMOTE_FIELDS.equals(id)){
-
-
                  initTableView(REMOTE_FIELDS,node);
-
-
              }else if("refreshid".equals(id)){
                  ProgressIndicator  progressIndicator= (ProgressIndicator) node;
 
@@ -178,11 +217,16 @@ public class App extends Application
 
         ObservableList<TableColumn> cs=tableView.getColumns();
         ObservableList<Table> list = FXCollections.observableArrayList();
-        List<Table> tabs=HttpUtil.getResult(
-                 HttpUtil.GET_FIELDS(),
-                "dbName="+current_db+"&tableName="+current_table,
-                 TableProcessData.getInstance(current_partition)
-        );
+        List<Table> tabs= null;
+        try {
+            tabs = HttpUtil.getResult(
+                    REMOTE+HttpUtil.GET_FIELDS(),
+                    "dbName="+current_db+"&tableName="+current_table,
+                     TableProcessData.getInstance(current_partition)
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if(null==tabs || tabs.isEmpty()){
             tableView.setItems(list);
         }
@@ -231,8 +275,7 @@ public class App extends Application
                           }
                          value.setFdesc(event.getNewValue().toString());
 
-                         HttpUtil.changeComment(HttpUtil.EXECUTE_UPDATE(),data);
-
+                         HttpUtil.execUpdate(REMOTE+HttpUtil.EXECUTE_UPDATE(),data);
 
                      }
                  });

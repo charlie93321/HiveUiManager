@@ -51,7 +51,7 @@ object t1{
 
 
 
-    val url = "http://47.93.56.114:19997/hive/exeQuery"
+    val url = "http://charlie.hdp.com:19997/hive/"
    // val pipeline: HttpRequest => Future[HttpResponse] = sendReceive
 
     // Post with header and parameters
@@ -87,9 +87,7 @@ dbName=default&sql= desc  sp_class.areaby_latlnt
        }
     }*/
 
-
-   //println(decodeUnicode(str))
-
+   println(CodeUtil.encode(url))
 
 
   }
