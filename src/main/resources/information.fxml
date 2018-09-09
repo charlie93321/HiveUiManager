@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="95.0" prefWidth="313.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ImageView fitHeight="36.0" fitWidth="36.0" layoutX="14.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@./information.png" />
+         </image>
+      </ImageView>
+      <Label fx:id="message" layoutX="62.0" layoutY="11.0" prefHeight="36.0" prefWidth="245.0" style="-fx-font-size: 12;" />
+      <Button fx:id="info_button" layoutX="227.0" layoutY="62.0" mnemonicParsing="false" prefHeight="23.0" prefWidth="61.0" style="-fx-background-color: #6495ED; -fx-text-fill: red; -fx-font-weight: bold; -fx-font-size: 12;" text="确定" />
+   </children>
+</AnchorPane>
